@@ -1,0 +1,118 @@
+﻿@page "/signin"
+@inject HttpClient Http
+
+
+
+
+<div class="container">
+
+  
+    <h1 class="mt-5">Sign in</h1>
+    <EditForm Model="@UserSignin" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+
+        <DataAnnotationsValidator />
+       
+
+        <div class="card mt-4">
+
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-md-8">
+
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-md-12">
+                                <label for="email">Email:</label>
+                                <input type="email" class="form-control" id="email" @bind-value="@UserSignin.Email" />
+                                <ValidationMessage For="@(()=>UserSignin.Email)" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-md-12">
+                                <label for="password">Password:</label>
+                                <input type="password" class="form-control" id="password" @bind-value="@UserSignin.Password" />
+                                <ValidationMessage For="@(()=>UserSignin.Password)" />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-info mt-4" Style="margin-top:10px">Sign in</button>
+                    </div>
+
+                    @if (displayValidationErrorMessages)
+                    {
+                        <div class="col-md-4" style="margin-top:10px">
+                            <label>Validation Messages: </label>
+                            <ValidationSummary />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </EditForm>
+
+    @if (displayUserLoggedIn)
+    {
+        <div class="row bg-success text-white" style="margin-top:10px; height:40px">
+            <label class="p-2">You succesfully logged in... </label>
+        </div>
+    }
+    @if (Errors)
+    {
+        <div class="col-md-4" style="margin-top:10px">
+            <label>Something went wrong!</label>
+        </div>
+    }
+</div>
+
+
+
+@code {
+
+
+    SignIn UserSignin = new SignIn();
+    private HttpResponseMessage result;
+
+    bool Errors = false;
+    bool displayValidationErrorMessages = false;
+    bool displayUserLoggedIn = false;
+
+
+
+    async Task HandleValidSubmit(EditContext context)
+    {
+        try
+        {
+
+
+            result = await Http.PostAsJsonAsync<SignIn>("https://localhost:44309/api/users/signin",
+            new SignIn { Email = UserSignin.Email, Password = UserSignin.Password });
+
+            var data = JsonConvert.DeserializeObject<dynamic>(await result.Content.ReadAsStringAsync());
+
+            await sessionStorage.SetItemAsync("accessToken", data.accessToken.ToString());
+            NavManager.NavigateTo("/");
+
+
+            displayValidationErrorMessages = false;
+            displayUserLoggedIn = true;
+
+            
+        }
+        catch (Exception)
+        {
+            Errors = true;
+
+        }
+
+    }
+
+    private void HandleInvalidSubmit(EditContext context)
+    {
+        displayValidationErrorMessages = true;
+        displayUserLoggedIn = false;
+    }
+
+
+
+}
+

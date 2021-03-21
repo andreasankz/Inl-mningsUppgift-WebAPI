@@ -1,0 +1,132 @@
+﻿@page "/createissue"
+@inject HttpClient Http
+<Authentication/>
+
+<div class="container">
+
+
+    <h1 class="mt-5">Create Issue</h1>
+    <EditForm Model="@createIssue" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+
+        <DataAnnotationsValidator />
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-md-12">
+
+                                <InputSelect id="handler" class="form-control" @bind-Value="@createIssue.HandlerId">
+                                    <option >Choose Handler</option>
+                                    
+                                    @foreach (var user in UserList)
+                                    {
+                                        <option value="@user.Id">@user.FullName</option>
+
+                                    }
+
+
+                                </InputSelect>
+
+                                <ValidationMessage For="@(()=>createIssue.HandlerId)" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-md-12">
+                                <label for="customer">Customer</label>
+                                <input type="text" class="form-control" id="customer" @bind-value="@createIssue.Customer" />
+                                <ValidationMessage For="@(()=>createIssue.Customer)" />
+                            </div>
+                        </div>
+                   
+
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-md-12">
+                                <label for="status">Status</label>
+                                <input type="text" class="form-control" id="status" @bind-value="@createIssue.IssueStatus" />
+                                <ValidationMessage For="@(()=>createIssue.IssueStatus)" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-md-12">
+                                <label for="description">Description</label>
+                                <input type="text" class="form-control" id="description" @bind-value="@createIssue.IssueDescription" />
+                                <ValidationMessage For="@(()=>createIssue.IssueDescription)" />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-info mt-4" Style="margin-top:10px">Create Issue</button>
+                    </div>
+
+                    @if (displayValidationErrorMessages)
+                    {
+                        <div class="col-md-4" style="margin-top:10px">
+                            <label>Validation Messages: </label>
+                            <ValidationSummary />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </EditForm>
+
+    @if (displayIssueCreated)
+    {
+        <div class="row bg-success text-white" style="margin-top:10px; height:40px">
+            <label class="p-2">Issue successfully created... </label>
+        </div>
+    }
+   
+</div>
+
+
+@code {
+    CreateIssue createIssue = new CreateIssue();
+
+    private List<GetUser> UserList { get; set; } = new List<GetUser>();
+
+    [Inject]
+    private IUserHttpRepository UserRepo { get; set; }
+
+    private HttpResponseMessage result;
+
+    bool Errors = false;
+    bool displayValidationErrorMessages = false;
+    bool displayIssueCreated = false;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Http.DefaultRequestHeaders.Remove("Authorization"); // tar bort headern här annars får jag ett felmeddelande att man inte kan addera 2stycken headers
+        Http.DefaultRequestHeaders.Add("Authorization", $"Bearer {await sessionStorage.GetItemAsync<string>("accessToken")}");
+
+        UserList = await UserRepo.GetUsers();
+
+
+    }
+
+
+    async Task HandleValidSubmit(EditContext context)
+    {
+        try
+        {
+            result = await Http.PostAsJsonAsync<CreateIssue>("https://localhost:44309/api/Issues/create",
+               new CreateIssue { HandlerId = createIssue.HandlerId, Customer = createIssue.Customer, IssueStatus = createIssue.IssueStatus, IssueDescription = createIssue.IssueDescription });
+
+            displayValidationErrorMessages = false;
+            displayIssueCreated = true;
+        }
+        catch (Exception)
+        {
+            
+
+        }
+
+    }
+
+    private void HandleInvalidSubmit(EditContext context)
+    {
+        displayValidationErrorMessages = true;
+        displayIssueCreated = false;
+    }
+}

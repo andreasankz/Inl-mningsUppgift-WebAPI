@@ -1,0 +1,58 @@
+﻿@page "/logout"
+@inject HttpClient Http
+
+
+<div class="container">
+    <h3 class="mt-5">Logout</h3>
+    @if (Success)
+    {
+        <div class="row bg-success text-white" style="margin-top:10px; height:40px">
+            <label class="p-2">You Succesfully logged out!</label>
+        </div>
+    }
+    @if (Fail)
+    {
+
+        <div class="row bg-danger text-white" style="margin-top:10px; height:40px">
+            <label class="p-2">Something went wrong! </label>
+        </div>
+    }
+    @if (LoggedIn)
+    {
+        <div class="row bg-warning text-white" style="margin-top:10px; height:40px">
+            <label class="p-2">You are not logged in! </label>
+        </div>
+    }
+</div>
+@code {
+    private bool Success = false;
+    private bool Fail = false;
+    private bool LoggedIn = false;
+    private string accessToken { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            accessToken = await sessionStorage.GetItemAsync<string>("accessToken");
+
+            if(accessToken == null)
+            {
+                LoggedIn = true;
+            }
+            else
+            {
+                await sessionStorage.RemoveItemAsync("accessToken");
+                Success = true;
+            }
+
+        }
+
+        catch
+        {
+            Fail = true;
+        }
+
+
+    }
+}

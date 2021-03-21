@@ -1,0 +1,92 @@
+﻿@page "/register"
+@inject HttpClient Http
+
+
+<div class="container">
+    <h1 class="mt-5">Register</h1>
+    <EditForm Model="@NewUser" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit">
+
+        <DataAnnotationsValidator />
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-md-12">
+                                <label for="firstName">First Name:</label>
+                                <input type="text" class="form-control" id="firstName" @bind-value="@NewUser.FirstName" />
+                                <ValidationMessage For="@(()=>NewUser.FirstName)" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-md-12">
+                                <label for="lastName">Last Name:</label>
+                                <input type="text" class="form-control" id="lastName" @bind-value="@NewUser.LastName"  />
+                                <ValidationMessage For="@(()=>NewUser.LastName)" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-md-12">
+                                <label for="email">Email:</label>
+                                <input type="email" class="form-control" id="email" @bind-value="@NewUser.Email"  />
+                                <ValidationMessage For="@(()=>NewUser.Email)" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-md-12">
+                                <label for="password">Password:</label>
+                                <input type="password" class="form-control" id="password" @bind-value="@NewUser.Password"  />
+                                <ValidationMessage For="@(()=>NewUser.Password)" />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-info mt-4" Style="margin-top:10px">Register</button>
+                    </div>
+
+                    @if (displayValidationErrorMessages)
+                    {
+                        <div class="col-md-4" style="margin-top:10px">
+                            <label>Validation Messages: </label>
+                            <ValidationSummary />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </EditForm>
+
+    @if (displayUserAddedToDB)
+    {
+        <div class="row bg-success text-white" style="margin-top:10px; height:40px">
+            <label class="p-2">User added to database... </label>
+        </div>
+    }
+</div>
+
+
+
+@code {
+
+    SignUp NewUser = new SignUp();
+    private HttpResponseMessage result;
+    bool displayValidationErrorMessages = false;
+    bool displayUserAddedToDB = false;
+
+
+    async Task HandleValidSubmit(EditContext context)
+    {
+
+
+        result = await Http.PostAsJsonAsync<SignUp>("https://localhost:44309/api/users/signup",
+            new SignUp { FirstName = NewUser.FirstName, LastName = NewUser.LastName, Email = NewUser.Email, Password = NewUser.Password });
+
+        displayValidationErrorMessages = false;
+        displayUserAddedToDB = true;
+    }
+
+    private void HandleInvalidSubmit(EditContext context)
+    {
+        displayValidationErrorMessages = true;
+        displayUserAddedToDB = false;
+    }
+}

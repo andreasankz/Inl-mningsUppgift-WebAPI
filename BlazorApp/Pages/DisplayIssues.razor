@@ -1,0 +1,78 @@
+﻿@page "/issues"
+
+@inject HttpClient Http
+<Authentication />
+
+<div class="container">
+    <h3 class="mt-5">Issues</h3>
+
+
+    @if (issues == null)
+    {
+
+    }
+
+    else
+    {
+        <table class="table">
+            <thead class="table-mod">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Handler Id</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Created Date</th>
+                    <th scope="col">Changed Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Description</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var issue in issues)
+                {
+                    <tr>
+                        <td class="text-mod">@issue.Id</td>
+                        <td>@issue.HandlerId</td>
+                        <td>@issue.Customer</td>
+                        <td>@issue.CreatedDate</td>
+                        <td>@issue.ChangedDate</td>
+                        <td>@issue.IssueStatus</td>
+                        <td>@issue.IssueDescription</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+</div>
+
+@code {
+        private Issues[] issues;
+        private HttpResponseMessage result;
+      
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        try
+        {
+            Http.DefaultRequestHeaders.Remove("Authorization"); // tar bort headern här annars får jag ett felmeddelande att man inte kan addera 2stycken headers
+            Http.DefaultRequestHeaders.Add("Authorization", $"Bearer {await sessionStorage.GetItemAsync<string>("accessToken")}");
+
+            result = await Http.GetAsync("https://localhost:44309/api/Issues");
+
+            if (result.IsSuccessStatusCode)
+            {
+                var data = await result.Content.ReadAsStringAsync();
+                issues = JsonConvert.DeserializeObject<Issues[]>(data);
+               
+            }
+
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+}

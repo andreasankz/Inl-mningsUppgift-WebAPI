@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{B5409F78-AB54-49AE-BC9C-4ACB80AE4945}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{6D9912C1-2694-42FE-9461-69380BF39656}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{546A47BD-EBF9-436D-BC46-07D5E8A5567D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5409F78-AB54-49AE-BC9C-4ACB80AE4945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5409F78-AB54-49AE-BC9C-4ACB80AE4945}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5409F78-AB54-49AE-BC9C-4ACB80AE4945}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5409F78-AB54-49AE-BC9C-4ACB80AE4945}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D9912C1-2694-42FE-9461-69380BF39656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D9912C1-2694-42FE-9461-69380BF39656}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D9912C1-2694-42FE-9461-69380BF39656}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D9912C1-2694-42FE-9461-69380BF39656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{546A47BD-EBF9-436D-BC46-07D5E8A5567D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{546A47BD-EBF9-436D-BC46-07D5E8A5567D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{546A47BD-EBF9-436D-BC46-07D5E8A5567D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{546A47BD-EBF9-436D-BC46-07D5E8A5567D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7B84F467-1526-4225-82C4-219B3E5CDDC9}
+	EndGlobalSection
+EndGlobal
